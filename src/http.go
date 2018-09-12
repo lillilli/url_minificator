@@ -48,4 +48,5 @@ func (h HTTPHandler) MinificateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write([]byte("No url param in request"))
+	w.WriteHeader(http.StatusBadRequest)
 }
