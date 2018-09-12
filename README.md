@@ -62,7 +62,7 @@ GET /325605f7
 2. Запустить проект.
 
 ```bash
-git clone https://github.com/lillilli/url_minificator.git
+git clone https://github.com/lillilli/url_minificator.git && cd url_minificator
 make run
 ```
 
@@ -73,7 +73,7 @@ make run
 3. Запустить образ.
 
 ```bash
-git clone https://github.com/lillilli/url_minificator.git
+git clone https://github.com/lillilli/url_minificator.git && cd url_minificator
 make image
 make run:image
 ```
