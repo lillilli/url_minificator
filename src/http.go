@@ -6,19 +6,18 @@ import (
 	"net/url"
 )
 
-// HTTPHandler - обработчик http запросов
+// HTTPHandler - http requests handler
 type HTTPHandler struct {
-	urlStore map[string]string
+	urlMinifier URLMinifier
 }
 
-// NewHTTPHandler - создает новый инстанс обработчика запросов
-func NewHTTPHandler() *HTTPHandler {
-	urlStore := make(map[string]string)
-	return &HTTPHandler{urlStore}
+// NewHTTPHandler - return a new handler instance
+func NewHTTPHandler(urlMinifier URLMinifier) *HTTPHandler {
+	return &HTTPHandler{urlMinifier: urlMinifier}
 }
 
-// RedirectHandler - http обработчик: перенаправляет запрос с минифицированного url на нормальный
-func (h HTTPHandler) RedirectHandler(w http.ResponseWriter, r *http.Request) {
+// RedirectHandler - http hander: redirect request from minificated url to normal
+func (h *HTTPHandler) RedirectHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -26,7 +25,7 @@ func (h HTTPHandler) RedirectHandler(w http.ResponseWriter, r *http.Request) {
 
 	path := url.PathEscape(r.URL.Path[1:])
 
-	if redirectedPath := GetLongURL(h.urlStore, path); redirectedPath != "" {
+	if redirectedPath := h.urlMinifier.GetFullURL(path); redirectedPath != "" {
 		http.Redirect(w, r, redirectedPath, 301)
 		return
 	}
@@ -35,14 +34,14 @@ func (h HTTPHandler) RedirectHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // MinificateHandler - http обработчик: минифицирует url, передаваемый в url параметре GET запроса
-func (h HTTPHandler) MinificateHandler(w http.ResponseWriter, r *http.Request) {
+func (h *HTTPHandler) MinificateHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	if longURL := r.URL.Query().Get("url"); longURL != "" {
-		minificatedURL := fmt.Sprintf("%s/%s", r.Host, MinificateURL(h.urlStore, longURL))
+	if fullURL := r.URL.Query().Get("url"); fullURL != "" {
+		minificatedURL := fmt.Sprintf("%s/%s", r.Host, h.urlMinifier.MinificateURL(fullURL))
 		w.Write([]byte(minificatedURL))
 		return
 	}

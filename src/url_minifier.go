@@ -3,21 +3,41 @@ package main
 import (
 	"hash/adler32"
 	"strconv"
+	"sync"
 )
 
-// MinificateURL - минифицирует url и возвращает url path для его которкой версии
-func MinificateURL(store map[string]string, longURL string) string {
-	hash := computeURLHash(longURL)
+// URLMinifier -url minifier interface
+type URLMinifier interface {
+	MinificateURL(longURL string) string
+	GetFullURL(urlHash string) string
+}
 
-	// Adler-32 имеет коллизии, поэтому нужно перезаписывать значение в хранилище
-	store[hash] = longURL
+type urlMinifier struct {
+	store map[string]string
+	sync.Mutex
+}
+
+// NewURLMinifer - return a new url minifier
+func NewURLMinifer() URLMinifier {
+	return &urlMinifier{store: make(map[string]string)}
+}
+
+// MinificateURL - minificate url and return url hash
+func (m *urlMinifier) MinificateURL(fullURL string) string {
+	hash := computeURLHash(fullURL)
+
+	// Adler-32 have a collisions, that`s why we need to overwrite value in store
+	m.Lock()
+	m.store[hash] = fullURL
+	m.Unlock()
+
 	return hash
 }
 
-// GetLongURL - возвращает полный url по минифицированному
-func GetLongURL(store map[string]string, shortURL string) string {
-	if longURL, ok := store[shortURL]; ok {
-		return longURL
+// GetLongURL - return a full url from a url hash
+func (m *urlMinifier) GetFullURL(urlHash string) string {
+	if fullURL, ok := m.store[urlHash]; ok {
+		return fullURL
 	}
 
 	return ""

@@ -1,21 +1,20 @@
 SERVICE_NAME = url_minifier
 
-# Сборка исполняемого файла сервиса
-build:
+build:  ## Build the executable file of service.
 	@echo "Building..."
 	cd src && go build && mv src $(SERVICE_NAME)
 
-# Запуск сервиса с локальным конфигом
-run: build
+run: build  ## Run a service.
 	@echo "Running..."
 	cd src && ./$(SERVICE_NAME)
 
-## Сборка Docker-образа
-image:
+image: ## Build a docker image.
 	@echo "Docker image building..."
 	$Q docker build -t $(SERVICE_NAME) .
 
-## Запуск Docker-образа
-run\:image:
+run\:image: ## Run a docker image.
 	@echo "Running docker image..."
 	docker run -p 8080:8080 $(SERVICE_NAME)
+
+help: ## Display this help screen
+	@grep -E '^[a-zA-Z_-\:]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ": .*?## "}; {gsub(/[\\]*/,""); printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

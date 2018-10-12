@@ -1,65 +1,56 @@
 # URL Minifier
 
-## Общее описание сервиса
+## Service description
 
-Данный сервис - аналог сlck.ru. Данный сервис генерирует короткий url из заданного, и при GET запросе на него редиректит на заданный.
+This service is analog of сlck.ru. He generates short url from the specified, and redirect to full url when someone requested short url.
+This service is a test project.
 
-## Ответы на вопросы
+### Language and libares
 
-### Язык и библиотеки
+Language: Golang.
+Libares: no.
 
-Сервис написан на GO, т.к. сочетает в себе производительность и параллельную обработку из коробки. Сервис написан без использования сторонних библиотек, я старался сделать его максимально легким и простым для понимания.
+### Service problems
 
-### Проблемы не решенные в прототипе
-
-- коллизия алгоритма хэша
-- масштабирование сервиса
-- удаленное хранение url (решит проблему с масштабированием)
-- протухание url
-- цепочки редиректов
-- логи, конифиги, метрики и прочие радости
-
-### Архитектура
-
-Я старался максимально упростить данный микросервис, поэтому отказался от стандартной архитектуры go серверов.
-Все исходники лежат в /src:
-
-- http.go - предосталяет обработчики для http запросов
-- main.go - главный исполняемы файл, создает http сервер
-- url_minifier.go - предоставляет методы для минификации и деминификации url
+- hash algorithm collisions
+- scaling
+- remote url storage (resolve scaling problem)
+- url swelling
+- redirect chains (redict abuse problem)
+- logs, metrics
 
 ## HTTP API
 
 ### Minificate
 
-Генерация короткого url из заданного.
+Generates short url from the specified one.
 
 ```http
-GET /--?url=https://yandex.ru
+GET http://localhost:8080/--?url=https://google.ru
 ```
 
-Ответ вида:
+Response:
 
 ```http
 200 OK
 
-localhost/325605f7
+localhost:8080/39ac065e
 ```
 
 ### Redirect
 
-Редирект с короткого url на его родительский url.
+Redirect to full url.
 
 ```http
-GET /325605f7
+GET http://localhost:8080/39ac065e
 ```
 
-Ответ редиректит на родительский url.
+Response redirects to the full url.
 
-## Локальный запуск
+## Local launch
 
-1. Склонировать репозиторий.
-2. Запустить проект.
+1. Clone the repository.
+2. Launch the project.
 
 ```bash
 git clone https://github.com/lillilli/url_minificator.git && cd url_minificator
@@ -68,9 +59,9 @@ make run
 
 ### Docker
 
-1. Склонировать репозиторий.
-2. Собрать образ.
-3. Запустить образ.
+1. Clone the repository.
+2. Make image.
+3. Launch image.
 
 ```bash
 git clone https://github.com/lillilli/url_minificator.git && cd url_minificator

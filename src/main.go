@@ -13,7 +13,7 @@ const (
 )
 
 func main() {
-	handler := NewHTTPHandler()
+	handler := NewHTTPHandler(NewURLMinifer())
 
 	http.HandleFunc("/", handler.RedirectHandler)
 	http.HandleFunc("/--", handler.MinificateHandler)
