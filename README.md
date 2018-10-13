@@ -1,18 +1,16 @@
 # URL Minifier
 
-Example project.
-
 ## Service description
 
-This service is analog of сlck.ru. He generates short url from the specified, and redirect to full url when someone requested short url.
+This service is analog of [сlck.ru](https://clck.ru/). He generates short url from the specified, and redirect to full url when someone requested short url.
 This service is a test project.
 
 ### Language and libares
 
-Language: Golang.
-Libares: no.
+Language: Go.
+Librares: no.
 
-### Service problems
+### TODO
 
 - hash algorithm collisions
 - scaling
