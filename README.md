@@ -1,5 +1,7 @@
 # URL Minifier
 
+Example project.
+
 ## Service description
 
 This service is analog of сlck.ru. He generates short url from the specified, and redirect to full url when someone requested short url.
